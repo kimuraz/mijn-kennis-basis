@@ -1,0 +1,21 @@
+{
+  "name": "mijn-kennis-basis",
+  "version": "0.1.0",
+  "description": "Personal, self-building knowledge base CLI",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Jose E Kimura Reis",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "dayjs": "^1.11.8",
+    "inquirer": "^8.2.5",
+    "minisearch": "^6.1.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8"
+  }
+}
