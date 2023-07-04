@@ -3,9 +3,11 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import MiniSearch from 'minisearch';
 import { v4 as uuid } from 'uuid';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const log = console.log;
-const dbFile = './db.json';
+const dbFile = process.env.DB_FILE;
 let search = null;
 let db = [];
 
@@ -56,6 +58,15 @@ function showHelp(){
   log('merge - Merges two databases, the second DB file path is passed as argument');
 }
 
+function replaceWords(text) {
+    const words = process.env.REPLACE_WORDS.split(',');
+    words.forEach(w => {
+        const [from, to] = w.split(':');
+        text = text.replaceAll(from, to);
+    });
+    return text;
+}
+
 async function newPair(args) {
   const pair = { id: uuid(), q: args?.[0] || '', a: args?.[1] || '' };
 
@@ -65,6 +76,13 @@ async function newPair(args) {
     pair.a = answers[1];
   }
 
+  if (process.env.REPLACE_WORDS) {
+      log(chalk.yellow(`Replacing words... ${process.env.REPLACE_WORDS.replaceAll(':', ' by ')}`));
+      pair.q = replaceWords(pair.q);
+      pair.a = replaceWords(pair.a);
+  }
+  pair.q = pair.q.trim();
+  pair.a = pair.a.trim();
   db.push(pair);
   saveDb();
 }

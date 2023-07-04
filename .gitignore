@@ -1,0 +1,6 @@
+*.swp
+*.swo
+.idea
+db*.json
+.env
+node_modules/
