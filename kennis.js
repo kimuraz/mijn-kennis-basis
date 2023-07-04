@@ -54,7 +54,7 @@ function searchPair(args){
   if (query === 'all') {
     results = db;
   } else {
-    results = search.search(query, { fuzzy: 0.2 });
+    results = search.search(query, { fuzzy: 0.2, prefix: term => term.length > 2 });
     if (!results.length) {
       log(chalk.red('=== No results ==='));
       return;
