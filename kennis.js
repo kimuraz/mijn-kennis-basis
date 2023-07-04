@@ -34,7 +34,7 @@ function showHelp(){
 }
 
 async function newPair(args) {
-  const pair = { id: (new Date()).getTime(), q: args?.[0]? || '', a: args?.[1]? || '' };
+  const pair = { id: (new Date()).getTime(), q: args?.[0] || '', a: args?.[1] || '' };
 
   if (!pair.q || !pair.a) {
     const answers = await inquirer.prompt(['Question', 'Answer']);
