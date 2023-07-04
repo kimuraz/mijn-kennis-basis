@@ -2,6 +2,7 @@ import fs from 'fs';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import MiniSearch from 'minisearch';
+import { v4 as uuid } from 'uuid';
 
 const log = console.log;
 const dbFile = './db.json';
@@ -13,7 +14,11 @@ function createSearch() {
     fields: ['q', 'a'],
     storeFields: ['q', 'a'],
   });
-  search.addAll(db);
+  try {
+      search.addAll(db);
+  } catch (e) {
+      log(chalk.red('Error creating search index' + e));
+  }
 }
 
 function loadDb() {
@@ -25,16 +30,34 @@ function saveDb() {
   fs.writeFileSync(dbFile, JSON.stringify(db));
 }
 
+function dbMerger(args) {
+    const filePath = args[0];
+    loadDb();
+    if (!fs.existsSync(filePath)) {
+        log(chalk.red(`Db file does not found ${filePath}`));
+        return;
+    }
+    const db2 = JSON.parse(fs.readFileSync(args[0]));
+    db2.forEach(pair => {
+        if (!db.find(p => p.q === pair.q)) {
+            const newPair = { ...pair, id: uuid() };
+            db.push(newPair);
+        }
+    });
+    saveDb();
+}
+
 function showHelp(){
   log(chalk.blue('This is an small CLI app to store questions and answers as your own small knowledge base'));
   log('Usage:', chalk.green('kennis [command] [args]'));
   log('help (or h) - Displays help');
   log('new (or n) - Creates a new pair or questions and answers');
   log('search (or s) - Full text search for terms in questions and answers');
+  log('merge - Merges two databases, the second DB file path is passed as argument');
 }
 
 async function newPair(args) {
-  const pair = { id: (new Date()).getTime(), q: args?.[0] || '', a: args?.[1] || '' };
+  const pair = { id: uuid(), q: args?.[0] || '', a: args?.[1] || '' };
 
   if (!pair.q || !pair.a) {
     const answers = await inquirer.prompt(['Question', 'Answer']);
@@ -80,6 +103,7 @@ const commands = {
   'help': showHelp,
   'search': searchPair,
   's': searchPair,
+  'merge': dbMerger,
 };
 
 

@@ -13,7 +13,8 @@
     "chalk": "^5.2.0",
     "dayjs": "^1.11.8",
     "inquirer": "^8.2.5",
-    "minisearch": "^6.1.0"
+    "minisearch": "^6.1.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "prettier": "^2.8.8"
